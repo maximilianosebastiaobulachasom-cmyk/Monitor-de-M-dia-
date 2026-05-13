@@ -1,0 +1,17 @@
+
+from supabase import create_client
+
+url = "COLE_AQUI_O_PROJECT_URL"
+key = "COLE_AQUI_A_ANON_KEY"
+supabase = create_client(url, key)
+
+# Exemplo de como o robô envia um comentário do Facebook para o Supabase
+def salvar_mencao(canal, autor, texto, link):
+    data = {
+        "canal": canal,
+        "autor": autor,
+        "conteudo": texto,
+        "link_referencia": link,
+        "data_publicacao": "2026-05-13T12:00:00Z" # Exemplo de data
+    }
+    supabase.table("monitoramento_global").insert(data).execute()
