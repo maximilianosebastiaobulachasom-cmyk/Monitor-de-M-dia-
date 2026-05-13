@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>OmniMarket Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .Positivo { border-left: 5px solid green; }
+        .Negativo { border-left: 5px solid red; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+    <h1>Monitoramento de Mercado</h1>
+    <div id="feeds">Carregando menções...</div>
+
+    <script>
+        const _supabase = supabase.createClient('SUA_URL_AQUI', 'SUA_CHAVE_ANON_AQUI');
+
+        async function carregarDados() {
+            let { data, error } = await _supabase
+                .from('monitoramento_global')
+                .select('*')
+                .order('data_publicacao', { ascending: false });
+
+            const container = document.getElementById('feeds');
+            container.innerHTML = '';
+
+            data.forEach(item => {
+                container.innerHTML += `
+                    <div class="card ${item.sentimento}">
+                        <div class="header">
+                            <strong>${item.autor}</strong> <span>${item.canal}</span>
+                        </div>
+                        <p>${item.conteudo}</p>
+                        <small>Publicado em: ${new Date(item.data_publicacao).toLocaleString()}</small>
+                        <br><a href="${item.link_referencia}" target="_blank">Ver original</a>
+                    </div>
+                `;
+            });
+        }
+        carregarDados();
+    </script>
+</body>
+</html>
